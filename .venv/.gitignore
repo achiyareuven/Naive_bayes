@@ -1,0 +1,35 @@
+# created by virtualenv automatically
+
+# קבצי מערכת פייתון
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# קבצי מערכת של PyCharm
+.idea/
+
+# סביבות וירטואליות
+.venv/
+env/
+venv/
+
+# קבצי לוגים
+*.log
+
+# קבצי הגדרות
+*.env
+.env/
+
+# קבצי בדיקות
+*.coverage
+.cache/
+.pytest_cache/
+
+# קבצי Jupyter
+.ipynb_checkpoints/
+
+# קבצים זמניים כלליים
+.DS_Store
+Thumbs.db
