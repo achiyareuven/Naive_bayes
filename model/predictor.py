@@ -11,9 +11,15 @@ class NaiveBayesPredictor:
             log_prob = math.log(self.model.class_count[label] / self.model.total_rows)
             for feature in sample:
                 value = sample[feature]
-                try:
+                if feature not in self.model.features_probs:
+                    raise ValueError(f"Unknown feature '{feature}' not seen during training")
+
+                if (
+                        value in self.model.features_probs[feature] and
+                        label in self.model.features_probs[feature][value]
+                ):
                     prob = self.model.features_probs[feature][value][label]
-                except KeyError:
+                else:
                     prob = 1e-6
                 log_prob +=math.log(prob)
             probs[label]=log_prob

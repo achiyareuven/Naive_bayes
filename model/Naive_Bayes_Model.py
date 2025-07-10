@@ -21,6 +21,7 @@ class NaiveBayesClassifier:
                 value = X.iloc[i][feature]
                 self.features_count[feature][value][label]+=1
                 self.features_values[feature].add(value)
+        self.calculate_feature_probs()
 
 
     def calculate_feature_probs(self):
