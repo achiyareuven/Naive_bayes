@@ -54,7 +54,7 @@
 # print(model.predict(sample))
 # print(model.predict_proba(sample))
 
-
+import pickle
 from data_loader.load_data_from_csv import CSVLoader
 from model.Naive_Bayes_Model import NaiveBayesClassifier
 from model.predictor import NaiveBayesPredictor
@@ -70,18 +70,22 @@ df = df.drop(columns=["Index"])
 X,y =  split_feature_target(df)
 X_train,X_test,y_train,y_test =split_train_test(X,y)
 
-sample = X.iloc[11049].to_dict()
+# sample = X.iloc[11049].to_dict()
 
 
-print(df)
+# print(df)
 model = NaiveBayesClassifier()
 model.fit(X_train, y_train)
 predictor = NaiveBayesPredictor(model)
 evaluator = Evaluator(predictor)
-print(predictor.predict_proba(sample))
-
+# print(predictor.predict_proba(sample))
 accuracy = evaluator.evaluate_accuracy(X_test, y_test)
-print("Accuracy:", accuracy)
+
+with open("trained_model.pkl","wb") as f:
+    pickle.dump((model,accuracy),f)
+
+print("✅ Model saved to trained_model.pkl")
+
 
 
 
