@@ -23,9 +23,13 @@ class LoadModelRequest(BaseModel):
 
 @app.on_event("startup")
 def load_default_model():
+    global model_app, predictor_app, accuracy
+    model_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "trained_model.pkl")
+    if not os.path.isfile(model_path):
+        print("No default model found. Skipping model load.")
+        return
     try:
-        global model_app ,predictor_app ,accuracy
-        with open("trained_model.pkl","rb") as file:
+        with open(model_path,"rb") as file:
             model_app ,accuracy = dill.load(file)
         predictor_app = NaiveBayesPredictor(model_app)
     except Exception as e:
