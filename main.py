@@ -54,7 +54,7 @@
 # print(model.predict(sample))
 # print(model.predict_proba(sample))
 
-import pickle
+import dill
 from data_loader.load_data_from_csv import CSVLoader
 from model.Naive_Bayes_Model import NaiveBayesClassifier
 from model.predictor import NaiveBayesPredictor
@@ -82,7 +82,7 @@ evaluator = Evaluator(predictor)
 accuracy = evaluator.evaluate_accuracy(X_test, y_test)
 
 with open("trained_model.pkl","wb") as f:
-    pickle.dump((model,accuracy),f)
+    dill.dump((model,accuracy),f)
 
 print("✅ Model saved to trained_model.pkl")
 

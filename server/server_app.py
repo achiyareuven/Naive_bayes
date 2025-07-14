@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from fastapi import FastAPI,HTTPException
 import uvicorn
 from model.predictor import NaiveBayesPredictor
-import pickle
+import dill
 import os
 
 
@@ -26,7 +26,7 @@ def load_default_model():
     try:
         global model_app ,predictor_app ,accuracy
         with open("trained_model.pkl","rb") as file:
-            model_app ,accuracy = pickle.load(file)
+            model_app ,accuracy = dill.load(file)
         predictor_app = NaiveBayesPredictor(model_app)
     except Exception as e:
         raise RuntimeError(f"failed to load model on startup: {e}")
@@ -67,7 +67,7 @@ def load_new_model(request: LoadModelRequest):
             raise HTTPException(status_code=400,detail="model file is invalid format ")
 
         with open(request.path, "rb") as file:
-            model_app, accuracy = pickle.load(file)
+            model_app, accuracy = dill.load(file)
         predictor_app = NaiveBayesPredictor(model_app)
         return {"message": f"Model loaded from {request.path}"}
     except FileNotFoundError:
@@ -77,4 +77,4 @@ def load_new_model(request: LoadModelRequest):
 
 
 if __name__ == "__main__":
-    uvicorn.run("server_app:app",host="127.0.0.1",port= 8000,reload=True)
+    uvicorn.run("server.server_app:app",host="127.0.0.1",port= 8000,reload=True)
