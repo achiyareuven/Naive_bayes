@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict , Any
 from pydantic import BaseModel
 from fastapi import FastAPI,HTTPException
 import uvicorn
@@ -16,7 +16,7 @@ predictor_app = None
 accuracy =None
 
 class PredictionRequest(BaseModel):
-    sample: Dict[str, str]
+    sample: Dict[str, Any]
 
 class LoadModelRequest(BaseModel):
     path: str
@@ -52,11 +52,18 @@ def predict(request: PredictionRequest):
     if predictor_app is None:
         raise HTTPException(status_code=500, detail="Model not loaded.")
     try:
+
         prediction = predictor_app.predict(request.sample)
         probabilities = predictor_app.predict_proba(request.sample)
+
+        prediction_clean = int(prediction) if hasattr(prediction, "item") else prediction
+        probabilities_clean = {
+            str(int(k) if hasattr(k, "item") else k): float(v) if hasattr(v, "item") else v
+            for k, v in probabilities.items()}
+
         return {
-            "prediction": prediction,
-            "probabilities": probabilities
+            "prediction": prediction_clean,
+            "probabilities": probabilities_clean
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Prediction failed: {e}")
