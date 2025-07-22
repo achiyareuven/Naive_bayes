@@ -45,7 +45,7 @@ def home():
 def get_accuracy():
     if accuracy is None:
         raise  HTTPException(status_code=500, detail="Accuracy not available. Model may not be loaded.")
-    return {"accuracy": float (accuracy)}
+    return {"accuracy":  (accuracy)}
 
 @app.post("/predict")
 def predict(request: PredictionRequest):
