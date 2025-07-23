@@ -16,7 +16,7 @@ import os
 
 app = FastAPI()
 cleaner = DataCleaner()
-load_data_csv  =CSVLoader(r"C:\Users\achiy\PycharmProjects\Naive_bayes\data\phishing.csv")
+load_data_csv  =CSVLoader("data/phishing.csv")
 model_app =  None
 predictor_app = None
 evaluator = None

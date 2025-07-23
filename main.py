@@ -29,11 +29,11 @@
 #     dill.dump((model,accuracy),f)
 #
 # print("✅ Model saved to trained_model.pkl")
-
-from manager import show_menu
+from server.server_app import app
 
 if __name__ == "__main__":
-    show_menu()
+    import uvicorn
+    uvicorn.run("server.server_app:app",host="127.0.0.1",port= 8000,reload=True)
 
 
 

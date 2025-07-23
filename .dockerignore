@@ -1,0 +1,22 @@
+# קבצי קומפילציה של פייתון
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# סביבת פיתוח
+.venv/
+venv/
+env/
+
+# קבצי IDE
+.idea/
+.vscode/
+
+# קבצי מערכת
+.DS_Store
+Thumbs.db
+
+# קבצים זמניים
+*.log
+*.tmp
