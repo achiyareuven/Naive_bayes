@@ -2,7 +2,7 @@ from typing import Dict , Any
 from pydantic import BaseModel
 from fastapi import FastAPI,HTTPException
 import uvicorn
-from model.predictor import NaiveBayesPredictor
+from train_service.app.model import NaiveBayesPredictor
 import dill
 import os
 

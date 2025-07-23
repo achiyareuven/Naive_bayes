@@ -1,6 +1,5 @@
 import  numpy as np
-from model.Naive_Bayes_Model import NaiveBayesClassifier
-from model.predictor import NaiveBayesPredictor
+
 
 class Evaluator:
     def __init__(self,model_predictor):
