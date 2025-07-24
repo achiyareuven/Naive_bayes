@@ -1,40 +1,42 @@
 from typing import Dict , Any
 from pydantic import BaseModel
 from fastapi import FastAPI,HTTPException
-import uvicorn
-from train_service.app.model import NaiveBayesPredictor
+from predict_service.app.model.predictor import NaiveBayesPredictor
 import dill
 import os
+import requests
 
-
-
+from train_service.app.server_app import MODEL_PATH
 
 app = FastAPI()
 
-model_app = None
-predictor_app = None
-accuracy =None
+MODEL_URL = "http://train_service:8000/get_model"
+model = None
+predictor =None
+accuracy = None
+
 
 class PredictionRequest(BaseModel):
     sample: Dict[str, Any]
 
-class LoadModelRequest(BaseModel):
-    path: str
 
 @app.on_event("startup")
-def load_default_model():
-    global model_app, predictor_app, accuracy
-    model_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "trained_model.pkl")
-    if not os.path.isfile(model_path):
-        print("No default model found. Skipping model load.")
-        return
+def load_model():
+    global model, predictor, accuracy
     try:
-        with open(model_path,"rb") as file:
-            model_app ,accuracy = dill.load(file)
-        predictor_app = NaiveBayesPredictor(model_app)
-    except Exception as e:
-        raise RuntimeError(f"failed to load model on startup: {e}")
+        response = requests.get(MODEL_URL)
+        if response.status_code != 200:
+            raise RuntimeError ("failed to get model")
 
+        with open(MODEL_PATH,"wb") as f:
+            f.write(response.content)
+
+        with open(MODEL_PATH, "rb") as f:
+                model, accuracy = dill.load(f)
+                predictor = NaiveBayesPredictor(model)
+
+    except Exception as e:
+        raise RuntimeError(f"Startup failed: {e}")
 
 
 @app.get("/")
@@ -49,12 +51,12 @@ def get_accuracy():
 
 @app.post("/predict")
 def predict(request: PredictionRequest):
-    if predictor_app is None:
+    if predictor is None:
         raise HTTPException(status_code=500, detail="Model not loaded.")
     try:
 
-        prediction = predictor_app.predict(request.sample)
-        probabilities = predictor_app.predict_proba(request.sample)
+        prediction = predictor.predict(request.sample)
+        probabilities = predictor.predict_proba(request.sample)
 
         prediction_clean = int(prediction) if hasattr(prediction, "item") else prediction
         probabilities_clean = {
@@ -68,24 +70,4 @@ def predict(request: PredictionRequest):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Prediction failed: {e}")
 
-@app.post("/load_model")
-def load_new_model(request: LoadModelRequest):
-    global model_app, predictor_app, accuracy
-    try:
-        if not request.path.strip():
-            raise HTTPException(status_code=400, detail="Path not provided.")
-        if not os.path.isfile(request.path):
-            raise HTTPException(status_code=400,detail="model file is invalid format ")
 
-        with open(request.path, "rb") as file:
-            model_app, accuracy = dill.load(file)
-        predictor_app = NaiveBayesPredictor(model_app)
-        return {"message": f"Model loaded from {request.path}"}
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="Model file not found.")
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Failed to load model: {e}")
-
-
-if __name__ == "__main__":
-    uvicorn.run("server.server_app:app",host="127.0.0.1",port= 8000,reload=True)
