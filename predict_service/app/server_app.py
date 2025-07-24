@@ -1,16 +1,18 @@
 from typing import Dict , Any
 from pydantic import BaseModel
 from fastapi import FastAPI,HTTPException
-from predict_service.app.model.predictor import NaiveBayesPredictor
+from model.predictor import NaiveBayesPredictor
 import dill
 import os
 import requests
 
-from train_service.app.server_app import MODEL_PATH
+
 
 app = FastAPI()
 
-MODEL_URL = "http://train_service:8000/get_model"
+MODEL_PATH = "trained_model.pkl"
+MODEL_URL = "http://train_container:8000/get_model"
+
 model = None
 predictor =None
 accuracy = None

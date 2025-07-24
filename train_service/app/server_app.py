@@ -3,12 +3,12 @@ from pydantic import BaseModel
 from fastapi.responses import FileResponse
 import dill
 import os
-from train_service.app.data_loader.load_data_from_csv import CSVLoader
-from train_service.app.data_cleaner.clean_data import DataCleaner
-from train_service.app.model.Naive_Bayes_Model import NaiveBayesClassifier
-from train_service.app.model.predictor import NaiveBayesPredictor
-from train_service.app.evaluation.evaluator import Evaluator
-from train_service.app.utils.data_utils import split_feature_target,split_train_test
+from data_loader.load_data_from_csv import CSVLoader
+from data_cleaner.clean_data import DataCleaner
+from model.Naive_Bayes_Model import NaiveBayesClassifier
+from model.predictor import NaiveBayesPredictor
+from evaluation.evaluator import Evaluator
+from utils.data_utils import split_feature_target,split_train_test
 
 
 app = FastAPI()

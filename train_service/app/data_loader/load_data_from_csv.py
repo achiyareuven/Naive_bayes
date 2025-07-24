@@ -1,5 +1,6 @@
 import  pandas as pd
-from train_service.app.data_loader.data_loader_interface import DataLoaderInterFace
+from .data_loader_interface import DataLoaderInterFace
+
 
 class CSVLoader(DataLoaderInterFace):
     def __init__(self,filepath):

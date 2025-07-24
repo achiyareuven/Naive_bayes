@@ -9,6 +9,8 @@ __pycache__/
 
 # קבצי מערכת של PyCharm
 .idea/
+*.iml
+
 
 # סביבות וירטואליות
 .venv/
