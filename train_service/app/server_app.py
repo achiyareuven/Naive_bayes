@@ -42,7 +42,9 @@ def started():
     except Exception as e:
         raise RuntimeError(f"Startup failed: {e}")
 
-@app.get()
+@app.get("/")
+def home():
+    return { "hello world"}
 
 @app.get("/get_model")
 def get_model():
